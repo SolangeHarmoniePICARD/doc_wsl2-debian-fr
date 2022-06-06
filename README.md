@@ -57,7 +57,7 @@ wsl --install -d Debian
 
 > Sur les systèmes de type Unix (comme Linux), lorsque vous tapez un mot de passe, pour des raisons de sécurité, rien ne s'affiche. C'est normal !
 
-### Mettre à niveau Debian de Buster à Bullseye
+### Mettre à niveau Debian de Stretch à Bullseye
 
 - Dans le terminal Debian :
 
