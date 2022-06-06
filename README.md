@@ -1,29 +1,29 @@
-# Install LAMP in WSL2
+# Installer LAMP dans WSL2
 
 
-## Why WSL?
+## Pourquoi WSL?
 
-> « WSL lets you run a Linux environment - including command-line tools and applications - directly on Windows, without the overhead of a traditional virtual machine or dualboot setup. [...] When you install a version of Linux on Windows, you’re getting a full Linux environment. It's isolated from Windows - the UI is the terminal, and you can install tools, languages, and compilers into the Linux environment without modifying or disrupting your Windows installation. »
+> « WSL vous permet d'exécuter un environnement Linux - y compris des outils de ligne de commande et des applications - directement sous Windows, sans les inconvénients d'une machine virtuelle traditionnelle ou d'une configuration en *dual boot*. [...] Lorsque vous installez une version de Linux sur Windows, vous obtenez un environnement Linux complet. Il est isolé de Windows - l'interface utilisateur est le terminal, et vous pouvez installer des outils, des langages et des compilateurs dans l'environnement Linux sans modifier ou perturber votre installation Windows. »
 > Source : [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
 
 
-## Prerequisite
+## Prérequis
 
-> Download and install [Visual Studio Code](https://code.visualstudio.com/Download)
+> Téléchargez et installez [Visual Studio Code](https://code.visualstudio.com/Download)
 
-- For a better integration of VSCode in Windows, check the following two checkboxes:
+- Pour une meilleure intégration de VSCode dans Windows, cochez les deux cases suivantes :
 
 ![VSCode integration](screenshots/0.png)
 
-## Install Debian in WSL2
+## Installer Debian dans WSL2
 
-### In Windows 11
+### Dans Windows 11
 
-- Run PowerShell as Administrator:
+- Exécutez PowerShell en tant qu'administrateur :
 
 ![Run PowerShell as Administrator](screenshots/1.png)
 
-- Type the command to know the available distributions:
+- Tapez la commande pour connaître les distributions disponibles :
 
 ```
 wsl --list --online
@@ -31,7 +31,7 @@ wsl --list --online
 
 ![available distributions](screenshots/2.png)
 
-- Install Debian: 
+- Installez Debian : 
 
 ```
 wsl --install -d Debian
@@ -39,45 +39,45 @@ wsl --install -d Debian
 
 ![Successful installation](screenshots/3.png)
 
-- Reboot the system (system updates will occur during shutdown and reboot: it's normal!). 
+- Redémarrez le système (des mises-à-jour du système se produiront pendant l'arrêt et le redémarrage : c'est normal !) 
 
 ![Successful installation](screenshots/4.png)
 
-> This step is only necessary the first time you install a Linux distribution with WSL2. If you make a new installation, you will not need to reboot. 
+> Cette étape n'est nécessaire que la première fois que vous installez une distribution Linux avec WSL2. Si vous faites une nouvelle installation, vous n'aurez pas besoin de redémarrer. 
 
-### Set up Debian
+### Configurez Debian
 
-- Launch Debian shell: 
+- Lancez le terminal Debian : 
 
 ![Debian shell](screenshots/5.png)
 
-- Wait a few seconds, then configure a new user and a new password:
+- Attendez quelques secondes, puis configurez le nom d'utilisateur d'un nouvel utilisateur, et un nouveau mot de passe :
 
 ![Password & Username](screenshots/6.png)
 
-> On Unix-like systems (like Linux), when you type a password, for security reasons, nothing is displayed. This is normal!
+> Sur les systèmes de type Unix (comme Linux), lorsque vous tapez un mot de passe, pour des raisons de sécurité, rien ne s'affiche. C'est normal !
 
-### Upgrade Debian from Buster to Bullseye
+### Mettre à niveau Debian de Buster à Bullseye
 
-- In the Debian shell:
+- Dans le terminal Debian :
 
 ```
 sudo apt update && sudo apt upgrade -y
 ```
 
-- Check the version of your distro:
+- Vérifiez la version de votre distribution :
 
 ```
 cat /etc/debian_version
 ```
 
-- Modify the sources:
+- Modifiez les sources :
 
 ```
 sudo nano /etc/apt/sources.list
 ```
 
-- Delete all the content of the file, and past this:
+- Supprimez tout le contenu du fichier, et collez ceci :
 
 ```
 deb http://deb.debian.org/debian bullseye main
@@ -85,48 +85,50 @@ deb http://deb.debian.org/debian bullseye-updates main
 deb http://security.debian.org/debian-security/ bullseye-security main
 ```
 
-> Press `CTRL` + `O` for overwriting, confirm by pressing `Enter`, and leave nano by pressing `CTRL` + `X`.
+> Appuyez sur `CTRL` + `O` pour écraser, confirmez en appuyant sur `Enter`, et quittez nano en appuyant sur `CTRL` + `X`.
 
-- Update and upgrade packages:
+- Mise-à-jour et mise-à-niveau des paquets :
 
 ```
 sudo apt update && sudo apt upgrade -y
 ```
 
-> Answer yes to the question « restart services during upgrade packages » 
+> Répondez oui à la question " redémarrer les services lors de la mise à jour des paquets ". 
 
 ![Restart services](screenshots/7.png)
 
-- Upgrade the version:
+- Mettez à jour la version :
 
 ```
 sudo apt full-upgrade -y
 ```
 
-- Clean your distribution:
+- Nettoyez votre distribution :
 
 ```
 sudo apt autoremove -y
 ```
 
-- Check that the version is up to date:
+- Vérifiez que la version est à jour :
 
 ```
 cat /etc/debian_version
 ```
 
-- Install additional packages:
+> La version actuelle est la `11.3`. Si vous voulez plus d'informations, vous pouvez aussi taper `cat /etc/os-release`.
+
+- Installez des paquets supplémentaires :
 ```
 sudo apt install -y software-properties-common curl wget openssh-server net-tools
 ```
 
-### [optional] No Password
+### [Optionnel] Ne plus avoir à taper le mot de passe
 
 ```
 sudo nano /etc/sudoers
 ```
 
-- At the last line of the file, paste:
+- A la dernière ligne du fichier, collez :
 
 ```bash
 # NO PASSWORD
