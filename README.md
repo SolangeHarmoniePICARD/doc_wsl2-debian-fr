@@ -136,35 +136,35 @@ sudo nano /etc/sudoers
 ```
 
 
-## Install MariaDB
+## Installer MariaDB
 
 ```
 sudo apt install -y mariadb-server
 ```
 
-- Checks the version to ensure that MariaDB is installed :
+- Vérifiez la version pour s'assurer que MariaDB est installé :
 
 ```
 mysql --version
 ```
 
-> If there is a version number displayed, it works.
+> Si un numéro de version est affiché, c'est que tout est bon !
 
-- Start the service: 
+- Démarrez le service : 
 
 ```
 sudo service mariadb start
 ```
 
-> Some other commands that may be useful to you: `sudo service mariadb status`, `sudo service mariadb stop`, `sudo service mariadb restart`.
+> D'autres commandes qui peuvent vous être utiles :  `sudo service mariadb status`, `sudo service mariadb stop`, `sudo service mariadb restart`.
 
-- Now, launch the shell script [mysql_secure_installation](https://mariadb.com/kb/en/mysql_secure_installation/) (wich enables you to improve the security of your MariaDB installation): 
+-  Maintenant, lancez le script [mysql_secure_installation](https://mariadb.com/kb/en/mysql_secure_installation/) (cela permet d'améliorer la sécurité de votre installation MariaDB): 
 
 ```
 sudo mysql_secure_installation
 ```
 
-- Press `Enter` when the script asks to enter current password for root, then, answer systematically `Y` (yes) to all questions (and of course, set the new password for root) :
+- Appuyez sur la touche `Entrer` de votre clavier lorsque le script demande de renseigner le mot de passe actuel de `root`, puis, répondez systématiquement `Y` (*yes*) à toutes les questions (et bien sûr, définissez le nouveau mot de passe pour `root`) :
 
 ```
 NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB
@@ -217,11 +217,13 @@ installation should now be secure.
 Thanks for using MariaDB!
 ```
 
+- Puis :
+
 ```
 sudo mysql -u root -p
 ```
 
-- Change *username* and *password*:
+- Personnalisez le *nom d'utilisateur* et le *mot de passe* :
 
 ```
 CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
@@ -230,157 +232,170 @@ EXIT
 ```
 
 
-## Install Apache
+## Installer Apache
 
 ```
 sudo apt install -y apache2
 ```
 
-- Start the service: 
+- Démarrez le service : 
 
 ```
 sudo service apache2 start
 ```
 
-> Like for MariaDB, there is ome other commands that may be useful: `sudo service apache2 status`, `sudo service apache2 stop`, `sudo service apache2 restart`.
+> Comme pour MariaDB, il existe d'autres commandes qui peuvent être utiles : `sudo service apache2 status`, `sudo service apache2 stop`, `sudo service apache2 restart`.
 
-- To be able to work in the `www` directory and not in the `html` directory, we will modify the Apache configuration:
+- Pour pouvoir travailler dans le répertoire `www` et non dans le répertoire `html`, nous allons modifier la configuration d'Apache :
 
 ```
 sudo nano /etc/apache2/sites-enabled/000-default.conf
 ```
 
-- Change ```DocumentRoot /var/www/html``` to ```DocumentRoot /var/www```.
+- Modifiez ```DocumentRoot /var/www/html``` pour ```DocumentRoot /var/www```.
 
 ![Apache Config](screenshots/8.png)
 
-- Then, change permissions:
+- Puis modifiez les permissions:
 
 ```
 sudo chgrp $(id -u) -R /var/www && sudo chown www-data -R /var/www && sudo chmod 775 -R /var/www
 ```
 
-- Rename `html` directory to `LAMP_setup`:
+- Renommez le répertoire `html` en `LAMP_setup`:
 
 ```
 mv /var/www/html /var/www/LAMP_setup
 ```
 
-- And `index.html` file to `apache2.html`:
+- Et le fichier `index.html` en `apache2.html`:
 
 ```
 mv /var/www/LAMP_setup/index.html /var/www/LAMP_setup/apache2.html
 ```
 
-- We need to do one last thing. In your terminal, type: 
+- Dans la barre d'URL de votre navigateur, tapez `http://localhost/LAMP_setup/apache2.html` :
+
+![apache2 infos](screenshots/29.png)
+
+- L'expérience m'a appris que devons faire une dernière chose. Dans votre terminal, tapez : 
 
 ```
 sudo nano /etc/apache2/apache2.conf
 ```
 
-- On the last line of the file, paste:
+- Sur la dernière ligne du fichier, collez :
 
 ```
 AcceptFilter https none
 ```
 
-> Press `CTRL` + `O` for overwriting, confirm by pressing `Enter`, and leave nano by pressing `CTRL` + `X`.
+> Appuyez sur les touches `CTRL` + `O` de votre clavier pour écraser, confirmez en appuyant sur `Entrer`, et quittez nano en appuyant sur `CTRL` + `X`.
 
 
-## Install Node.js
+## Installer Node.js
 
-> Why we need to install Node.js in our LAMP Stack? Simply because we will install a mail catcher: MailDev (which works with Node.js). 
+> Pourquoi devons-nous installer Node.js dans notre pile LAMP ? Tout simplement parce que nous allons installer un *mail catcher* : MailDev (qui fonctionne avec Node.js). 
 
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ```
 
-- ⚠️ Close the Debian shell and restart it.
+- ⚠️ Fermez le terminal Debian et redémarrez-le.
 
 ```
 command -v nvm
 ```
 
-> If returns `nvm`, it works !
+> Si cela renvoie `nvm`, ça fonctionne !
 
-- Install the current stable LTS release of Node.js:
+- Installez la version stable LTS actuelle de Node.js :
 
 ```
 nvm install --lts
 ```
 
-- Install the current release of Node.js: 
+- Installez la version actuelle de Node.js : 
 ```
 nvm install node
 ```
 
-> List what versions of Node are installed: `nvm ls`.
+> Lister les versions de Node qui sont installées : `nvm ls`.
 
 
-## Install PHP
+## Installer PHP
 
 ```
 sudo apt -y install lsb-release apt-transport-https ca-certificates 
 ```
 
-- Download GPG key:
+- Téléchargez la *GPG Key* (clé de chiffrement et de déchiffrement) du dépôt sur lequel nous allons récupérer les paquets :
 
 ```
 sudo curl -sSL -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 ```
 
-- Add PHP repository:
+- Ajoutez le dépôt :
 
 ```
 sudo sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
 ```
 
-- Update the package lists:
+- Mettez-à-jour la liste des paquets :
 
 ```
 sudo apt update && sudo apt -y upgrade && sudo apt -y autoremove
 ```
 
-- Next, install PHP 8.1 and commonly used PHP extensions:
+- Ensuite, installez PHP 8.1 et les extensions PHP les plus utilisées :
 
 ```
 sudo apt -y install php8.1 libapache2-mod-php8.1 php8.1-{bcmath,bz2,intl,gd,mbstring,mysql,zip,curl,dom,cli,xml}
 ```
 
-> You can use `php -v` to check PHP version, and `php -m` to check what extensions are installed.
+> Vous pouvez utiliser `php -v` pour vérifier la version de PHP, et `php -m` pour vérifier quelles extensions sont installées.
 
-- You have to restart Apache for the changes to take effect:
+- Vous devez redémarrer Apache pour que les modifications soient prises en compte :
 
 ```
 sudo service apache2 restart
 ```
 
-- You can create a file to display your PHP configuration:
+- Vous pouvez créer un fichier pour afficher votre configuration PHP :
 
 ```bash
 echo -e "<?php\n\nphpinfo();\n\n// EOF" >> /var/www/LAMP_setup/phpinfo.php
 ```
 
-### PHP errors
+- Dans la barre d'URL de votre navigateur, tapez `http://localhost/LAMP_setup/phpinfo.php` :
+
+![php infos](screenshots/28.png)
+
+
+### Les erreurs en PHP
 
 ```
 sudo nano /etc/php/8.1/apache2/php.ini
 ```
 
-- Find these 2 lines in the file:
+- Trouvez ces 2 lignes dans le fichier :
 
 ![PHP Errors](screenshots/9.png)
 
-- Change the default value of `error_reporting` from `E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED` to `E_ALL` and the default value of `display_errors` from `Off` to `On`:
+-  Changez la valeur par défaut de `error_reporting` qui est `E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED` pour `E_ALL` et la valeur par défaut de `display_errors` qui est à `Off` pour `On` :
 
 ```
 error_reporting = E_ALL
 display_errors = On
 ```
 
+> Appuyez sur les touches `CTRL` + `O` de votre clavier pour écraser, confirmez en appuyant sur `Entrer`, et quittez nano en appuyant sur `CTRL` + `X`.
+
+⚠️ Attention, nous configurons un environnement de développement local... Sur un serveur de production, ne passez jamais display_errors à On !
+
 ![PHP Errors - change values](screenshots/10.png)
 
-> View error logs when you debug your code in PHP: `cat /var/log/apache2/error.log`
+> Afficher les journaux d'erreurs lorsque vous déboguez votre code en PHP : `cat /var/log/apache2/error.log`
 
 
 ### Install Postfix
@@ -389,31 +404,33 @@ display_errors = On
 sudo apt install -y postfix
 ```
 
-> Choose `Internet Site`, then keep the default values.
+> Choisissez "Site Internet", puis conservez les valeurs par défaut.
 
 ![Install Postfix](screenshots/11.png)
 
-- We need to change `relayhost` in the config file of Postfix:
+- Nous devons changer `relayhost` dans le fichier de configuration de Postfix :
 
 ```
 sudo nano /etc/postfix/main.cf
 ```
 
-- Find the line `relayhost` (normally, there is no value yet):
+- Trouvez la ligne `relayhost` (normalement, il n'y a pas encore de valeur) :
 
 ![Postfix relayhost](screenshots/12.png)
 
-- Change value of `relayhost ` to `127.0.0.1:1025`.
+- Changez la valeur de `relayhost` en `127.0.0.1:1025`.
 
 ![Postfix relayhost - change value](screenshots/13.png)
 
-### Install MailDev
+> Appuyez sur les touches `CTRL` + `O` de votre clavier pour écraser, confirmez en appuyant sur `Entrer`, et quittez nano en appuyant sur `CTRL` + `X`.
+
+### Installer MailDev
 
 ```
 npm install -g maildev
 ```
 
-- Start MailDev: 
+- Démarrez MailDev: 
 
 ```
 maildev --ip 127.0.0.1
@@ -421,7 +438,7 @@ maildev --ip 127.0.0.1
 
 ![MailDev](screenshots/14.png)
 
-- In the **URL bar** of your browser, type:
+- Dans la **barre URL** de votre navigateur, tapez :
 
 ```
 http://127.0.0.1:1080
@@ -429,56 +446,56 @@ http://127.0.0.1:1080
 
 ![MailDev GUI](screenshots/15.png)
 
-- ⚠️ Now, exit shell. For some reason, when you close the shell and restart it, then try to launch MailDev, everything happens as if it was not installed. Why is this? I DON'T KNOW! The solution... reinstall MailDev a second time with the command `npm install -g maildev`, then there is normally no more problem.
+- ⚠️ Maintenant, quittez le terminal. Pour une raison qui dépasse mon entendement, lorsque vous fermez le terminal et le redémarrez, puis que vous essayez de lancer MailDev, tout se passe comme s'il n'était pas installé. Pourquoi ? **Je ne sais pas !** La solution... réinstallez MailDev une seconde fois avec la commande `npm install -g maildev`, puis il n'y a normalement plus de problème.
 
 ```
 npm install -g maildev
 ```
 
-> Ok, it's work. We need this when we develop in php... For now, you can close MailDev by pressing `CTRL` + `C`.
+>  Ok, ça marche. On en aura besoin quand on développera en PHP... Pour l'instant, vous pouvez fermer MailDev en appuyant sur `CTRL` + `C`.
 
 
-## Install Adminer
+## Installer Adminer
 
 ```
 sudo apt install -y adminer
 ```
 
-- Activate the conf file for Apache:
+- Activez le fichier conf pour Apache :
 
 ```
 sudo a2enconf adminer
 ```
 
-- Finally, restart Apache:
+- Enfin, redémarrez Apache :
 
 ```
 sudo service apache2 restart
 ```
 
-- In the **URL bar** of your browser, type: 
+- Dans la **barre URL** de votre navigateur, tapez : 
 
 ```
 localhost/adminer
 ```
 
-> ⚠️ Don't forget to launch don't forget to launch `sudo service mariadb start`.
+> ⚠️ N'oubliez pas de lancer `sudo service mariadb start`.
 
-- Log in with the username and password you set up when you installed MariaDB:
+- Connectez-vous avec le nom d'utilisateur et le mot de passe que vous avez définis lors de l'installation de MariaDB :
 
 ![Adminer Login](screenshots/16.png)
 
-- It works:
+- Ça marche :
 
 ![Adminer GUI](screenshots/17.png)
 
-## Install GIT
+## Installer GIT
 
 ```
 sudo apt install git -y
 ```
 
-- Change `your-username` and `your-mail@example.com`:
+- Changez `your-username` et `your-mail@example.com` :
 
 ```
 git config --global user.name your-username
@@ -486,19 +503,21 @@ git config --global user.email your-mail@example.com
 git config --global init.defaultBranch main
 ```
 
-- You can change this information at any time:
+- Vous pouvez modifier ces informations à tout moment :
 
 ```
 sudo nano ~/.gitconfig
 ```
 
-### Authenticate with SSH key on GitHub
+> Appuyez sur les touches `CTRL` + `O` de votre clavier pour écraser, confirmez en appuyant sur `Entrer`, et quittez nano en appuyant sur `CTRL` + `X`.
 
-> Of course, you must have a GitHub account. If you don't have one, create your GitHub account: [Join GitHub](https://github.com/join)
+### S'authentifier avec une clé SSH sur GitHub
 
-- Generate your SSH Key: 
+> Bien sûr, vous devez avoir un compte GitHub. Si vous n'en avez pas, créez votre compte GitHub : [Join GitHub](https://github.com/join)
 
-> Keep the default values, and do not enter a passphrase
+- Générez votre clé SSH : 
+
+> Conservez les valeurs par défaut et ne saisissez pas de phrase de passe.
 
 ```
 ssh-keygen -t rsa -b 2048
@@ -506,39 +525,39 @@ ssh-keygen -t rsa -b 2048
 
 ![SSH Key](screenshots/18.png)
 
-- Display your SSH Key and copy it:
+- Affichez votre clé SSH et copiez-la :
 
 ```
 cat ~/.ssh/id_rsa.pub
 ```
 
-- Then you need to paste it in `SSH Keys` into your GitHub Account Settings. Login with your account and go to `Settings`:
+- Ensuite, vous devez le coller dans `SSH Keys` dans les paramètres de votre compte GitHub. Connectez-vous avec votre compte et allez dans `Settings` :
 
 ![GitHub Settings access](screenshots/19.png)
 
-- Paste your SSH Key:
+- Collez votre clé SSH :
 
 ![Paste SSH Key](screenshots/20.png)
 
-- Result: 
+- Résultat : 
 
 ![GitHub SSH Key result](screenshots/21.png)
 
-- When you make your first commit, you will have to allow the connection between VSCode and github:
+- Lorsque vous faites votre premier commit, vous devrez autoriser la connexion entre VSCode et github :
 
 ![Allow connexion between VSCode & GitHub](screenshots/23.png)
 
-## Install « Remote - WSL » in VSCode 
+## Installer « Remote - WSL » dans VSCode 
 
-- Install [Remote - WSL](https://aka.ms/vscode-remote/download/wsl):
+- Installez [Remote - WSL](https://aka.ms/vscode-remote/download/wsl):
 
 ![Remote - WSL Web Page](screenshots/24.png)
 
-- Validates the opening in VSCode:
+- Validez l'ouverture de l'extension dans VSCode :
 
 ![Remote - WSL open VSCode](screenshots/25.png)
 
-- Installs the extension in VSCode:
+- Installez l'extension dans VSCode :
 
 ![Remote - WSL open VSCode](screenshots/26.png)
 
@@ -549,7 +568,7 @@ cat ~/.ssh/id_rsa.pub
 sudo nano ~/.bashrc
 ```
 
-- At the last line of the file, paste:
+- A la dernière ligne du fichier, collez :
 
 ```bash
 if [[ "$TERM_PROGRAM" != "vscode" ]]; then
@@ -566,17 +585,19 @@ if [[ "$TERM_PROGRAM" != "vscode" ]]; then
 fi
 ```
 
-- Close your Debian shell and relaunch it, VSCode opens in `www` directory, you need to "trust the authors of the files in this folder":
+- Fermez votre terminal Debian et relancez-le, VSCode s'ouvre dans le répertoire `www`, vous devez "faire confiance aux auteurs des fichiers de ce dossier" :
 
 ![VSCode - Trust authors](screenshots/27.png)
 
-## 🎉 It's over!
+## 🎉 C'est terminé !
 
-- Congratulations! You have finished configuring your local PHP/SQL development environment!
+- Félicitations ! Vous avez terminé la configuration de votre environnement local de développement PHP/SQL !
 
-- How to use it? Simply by launching Debian in Windows 11, which will start Apache, MariaDB, Postfix, then Visual Studio Code which connects directly to your www directory, and finally MailDev. 
+- Comment l'utiliser ? Tout simplement en lançant Debian dans Windows 11, ce qui va démarrer Apache, MariaDB, Postfix, puis Visual Studio Code (qui se connecte directement à votre répertoire www), et enfin MailDev. 
 
-- You can minimize the Debian shell, and there is no need to touch it as long as you develop.
+- Vous pouvez minimiser le terminal Debian, et il n'est plus nécessaire d'y toucher tant que vous développez. Ce terminal, vous ne pouvez pas l'utiliser car il fait tourner MailDev et vous n'avez donc pas la main pour entrer de nouvelles lignes de commande. Pour utiliser un terminal, dans VSCode, dans le menu `Terminal`, choisissez `Nouveau terminal` : un terminal Debian intégré s'ouvre.
+
+![VSCode - Terminal](screenshots/30.png)
 
 ## Resources
 
@@ -584,7 +605,7 @@ fi
 - [WSL2 Guide for Debian](https://gist.github.com/xnebulr/c769f26bffd41db2667d1f9de9f8ce5a)
 - [PHP.Watch](https://php.watch/versions)
 
-## Tools
+## Outils
 - [Debian](https://www.debian.org/)
 - [The GNU Nano Text Editor Homepage](https://www.nano-editor.org/)
 - [MariaDB Foundation](https://mariadb.org/)
