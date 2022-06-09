@@ -47,6 +47,14 @@ wsl --install -d Debian
 
 ### Configurez Debian
 
+> ⚠️ Si vous avez le moindre problème, un message d'erreur, etc. ne paniquez pas ! Dans Powershell, en tant qu'administrateur, tapez :
+> ```
+> wsl --unregister Debian
+> ```
+> Puis recommencez l'installation.
+>
+> Si à un moment dans le terminal Debian un processus dure trop longtemps, appuyez sur les touches `CTRL` + `C` de votre clavier pour arrêter le processus.
+
 - Lancez le terminal Debian : 
 
 ![Debian shell](screenshots/5.png)
