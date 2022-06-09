@@ -52,12 +52,12 @@ wsl --install -d Debian
 > wsl --unregister Debian
 > ```
 > Puis recommencez l'installation.
->
-> Si à un moment dans le terminal Debian un processus dure trop longtemps, appuyez sur les touches `CTRL` + `C` de votre clavier pour arrêter le processus.
 
 - Lancez le terminal Debian : 
 
 ![Debian shell](screenshots/5.png)
+
+> ⚠️ Si à un moment dans le terminal Debian un processus dure trop longtemps, appuyez sur les touches `CTRL` + `C` de votre clavier pour arrêter le processus.
 
 - Attendez quelques secondes, puis configurez le nom d'utilisateur d'un nouvel utilisateur, et un nouveau mot de passe :
 
